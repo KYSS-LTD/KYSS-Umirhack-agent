@@ -1,0 +1,20 @@
+services:
+  kyss-agent:
+    build: .
+    restart: unless-stopped
+    init: true
+    stop_grace_period: 25s
+    env_file:
+      - .env
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,noexec,nosuid,nodev
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    pids_limit: ${AGENT_PIDS_LIMIT:-256}
+    mem_limit: ${AGENT_MEM_LIMIT:-512m}
+    cpus: "${AGENT_CPUS_LIMIT:-1.00}"
+    volumes:
+      - ./agent-data:/agent-data
